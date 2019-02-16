@@ -11,9 +11,16 @@ namespace ASP.NET.Core_Pipeline.Extensions
     {
         const string br = "\n";
         const string tab = "    ";
+        /// <summary>
+        /// 对象转为json字符串
+        /// </summary>
+        /// <param name="obj">对象</param>
+        /// <param name="propertyName">属性名称</param>
+        /// <param name="level">层级</param>
+        /// <returns></returns>
         public static string ToJson(this object obj, string propertyName = "", int level = 0)
         {
-            if (obj == null) return $"{GetJsonPropertyName(propertyName, level)}: undefined {br}";
+            if (obj == null) return $"{GetJsonPropertyName(propertyName, level)}: undefined";
             var type = obj.GetType();
 
             if (obj is string)
@@ -35,8 +42,8 @@ namespace ASP.NET.Core_Pipeline.Extensions
                 return ie.ToJson(propertyName, level);
             }
 
-            StringBuilder sb = new StringBuilder($"{GetJsonPropertyName(propertyName, level)}{{");
-            sb.AppendLine();
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{GetJsonPropertyName(propertyName, level)}{{");
             foreach (var item in type.GetProperties())
             {
                 sb.AppendLine(item.GetValue(obj).ToJson(item.Name, level + 1) + ",");
@@ -70,9 +77,9 @@ namespace ASP.NET.Core_Pipeline.Extensions
 
         public static string ToJson(this IEnumerable enumerable, string propertyName = "", int level = 0)
         {
-            if (enumerable == null) return $"{propertyName}: {br}";
-            StringBuilder sb = new StringBuilder($"{GetJsonPropertyName(propertyName, level)}[");
-            sb.AppendLine();
+            if (enumerable == null) return $"{GetJsonPropertyName(propertyName, level)}: undefined";
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{GetJsonPropertyName(propertyName, level)}[");
             foreach (var item in enumerable)
             {
                 sb.AppendLine(item.ToJson("", level + 1) + ",");
