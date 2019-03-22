@@ -62,7 +62,7 @@ namespace ASP.NET.Core_Pipeline.Extensions
 
                 return $"{GetJsonPropertyName(propertyName, level)} {obj.ToString()}";
             }
-            throw new Exception("传入参数不是子类型");
+            throw new Exception("传入参数不是值类型");
         }
 
         public static string ToJson(this string str, string propertyName = "", int level = 0)
