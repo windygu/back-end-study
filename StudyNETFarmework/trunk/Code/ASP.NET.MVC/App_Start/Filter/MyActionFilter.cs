@@ -20,7 +20,7 @@ namespace ASP.NET.MVC.App_Start.Filter
             foreach (var keyValue in keyValuePairs)
             {
                 _log.Debug($"参数：{keyValue.Key}，值：{keyValue.Value}");
-                newKeyValuePairs.Add(keyValue.Key, keyValue.Value.GetType().Equals(typeof(string))? keyValue.Value.ToString()+"ActionFilter": keyValue.Value);
+                newKeyValuePairs.Add(keyValue.Key, keyValue.Value!=null&&keyValue.Value.GetType().Equals(typeof(string))? keyValue.Value.ToString()+"ActionFilter": keyValue.Value);
             }
 
             filterContext.ActionParameters = newKeyValuePairs;

@@ -46,9 +46,9 @@
                     @Html.DisplayFor(modelItem => item.Enable)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    @Html.ActionLink("Edit", "Edit", new { Uid = item.Uid  }) |
+                    @Html.ActionLink("Details", "Details", new { Uid = item.Uid }) |
+                    @Html.ActionLink("Delete", "Delete", new { Uid = item.Uid })
                 </td>
             </tr>
         }

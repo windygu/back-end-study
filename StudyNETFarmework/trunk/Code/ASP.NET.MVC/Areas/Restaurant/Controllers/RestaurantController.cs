@@ -48,6 +48,20 @@ namespace ASP.NET.MVC.Areas.Restaurant.Controllers
             return View(model);
         }
 
+        public ViewResult Edit(int id)
+        {
+            return View(dbContext.Restaurants.FirstOrDefault(p => p.Id.Equals(id)));
+        }
+        public ViewResult Detail(int id)
+        {
+            return View(dbContext.Restaurants.FirstOrDefault(p => p.Id.Equals(id)));
+        }
+        public ViewResult Delete(int id)
+        {
+            var model = dbContext.Restaurants.FirstOrDefault(p => p.Id.Equals(id));
+            return View(dbContext.Restaurants.Remove(model));
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (dbContext != null)

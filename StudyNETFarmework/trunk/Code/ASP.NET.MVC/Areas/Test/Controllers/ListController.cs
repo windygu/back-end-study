@@ -52,7 +52,7 @@ namespace ASP.NET.MVC.Areas.Test.Controllers
         }
 
         // GET: Test/List/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(string Uid)
         {
             return View();
         }
@@ -80,14 +80,14 @@ namespace ASP.NET.MVC.Areas.Test.Controllers
         }
 
         // GET: Test/List/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(string Uid)
         {
             return View();
         }
 
         // POST: Test/List/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(int Uid, FormCollection collection)
         {
             try
             {
@@ -102,14 +102,14 @@ namespace ASP.NET.MVC.Areas.Test.Controllers
         }
 
         // GET: Test/List/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(string Uid)
         {
             return View();
         }
 
         // POST: Test/List/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Delete(string Uid, FormCollection collection)
         {
             try
             {
