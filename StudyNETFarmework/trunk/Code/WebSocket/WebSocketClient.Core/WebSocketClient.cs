@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 namespace WebSocketClient.Core
 {
     public delegate void OnReceiveMessage(WebSocketClient webSocketClient, string message);
+    public delegate void OnCloseWebSocketClient(WebSocketClient webSocketClient, WebSocketCloseStatus webSocketCloseStatus, string statusDescription);
     public class WebSocketClient:IDisposable
     {
         #region 成员属性
@@ -28,7 +30,14 @@ namespace WebSocketClient.Core
         #endregion
 
         #region 事件
+        /// <summary>
+        /// 当接收到服务器端消息时触发
+        /// </summary>
         public event OnReceiveMessage OnReceiveMessage;
+        /// <summary>
+        /// 当WebSocket关闭时触发
+        /// </summary>
+        public event OnCloseWebSocketClient OnCloseWebSocketClient;
         #endregion
 
         #region 构造函数
@@ -66,6 +75,7 @@ namespace WebSocketClient.Core
         /// <summary>
         /// 打开WebSocket连接
         /// </summary>
+        /// <exception cref="Exception">当无法连接到服务器时触发</exception>
         /// <returns></returns>
         public async Task OpenAsync()
         {
@@ -114,7 +124,7 @@ namespace WebSocketClient.Core
             catch (Exception ex)
             {
                 PrintHelper.printError(ex, log);
-                await CloseAsync(WebSocketCloseStatus.ProtocolError, "WebSocket 连接异常" + ex.Message);
+                await CloseAsync(WebSocketCloseStatus.ProtocolError, "WebSocket 连接异常" + GetExceptionMessge(ex));
                 return;
             }
             byte[] bytes = new byte[webSocketReceiveResult.Count];
@@ -140,13 +150,15 @@ namespace WebSocketClient.Core
         /// <returns></returns>
         public async Task CloseAsync(WebSocketCloseStatus webSocketCloseStatus, string message)
         {
-            if (ClientWebSocket.State == WebSocketState.Open||ClientWebSocket.State == WebSocketState.CloseReceived)
+            if (ClientWebSocket.State == WebSocketState.Open || ClientWebSocket.State == WebSocketState.CloseReceived)
             {
                 string statusDescription = message;
                 statusDescription = statusDescription.Length > 61 ? statusDescription.Substring(0, 61) : statusDescription;
                 PrintHelper.PrintInfo($"关闭WebSocket", log);
                 await ClientWebSocket.CloseAsync(webSocketCloseStatus, statusDescription, cancellationToken);
             }
+            if (ClientWebSocket.State != WebSocketState.Closed && OnCloseWebSocketClient != null)
+                OnCloseWebSocketClient.Invoke(this, webSocketCloseStatus, message);
             CancellationTokenSource.Cancel();
         }
 
@@ -180,6 +192,14 @@ namespace WebSocketClient.Core
             ClientWebSocket.Options.SetRequestHeader("Sec-WebSocket-Name", Name);
             ClientWebSocket.Options.SetRequestHeader("charset", Encoding.HeaderName);
             //ClientWebSocket.Options.SetRequestHeader("charset", Encoding.EncodingName);
+        }
+
+        private string GetExceptionMessge(Exception ex)
+        {
+            string message = ex.Message;
+            if (ex.InnerException != null)
+                message += " => " + GetExceptionMessge(ex.InnerException);
+            return message;
         }
 
         public void Dispose()

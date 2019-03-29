@@ -18,10 +18,16 @@ namespace WebSocketClient
             webSocketClient.SetEncoding(Encoding.UTF8);
 
             webSocketClient.OnReceiveMessage += WebSocketClient_OnReceiveMessage;
+            webSocketClient.OnCloseWebSocketClient += WebSocketClient_OnCloseWebSocketClient;
             ListeningClientWebSocketStatus();
             string key = Console.ReadLine();
             CommandHandler(key);
 
+        }
+
+        private static void WebSocketClient_OnCloseWebSocketClient(Core.WebSocketClient webSocketClient, WebSocketCloseStatus webSocketCloseStatus, string statusDescription)
+        {
+            Console.WriteLine($"WebSocket上下文已关闭，关闭原因【{statusDescription}】");
         }
 
         private static void WebSocketClient_OnReceiveMessage(Core.WebSocketClient webSocketClient, string message)
@@ -33,7 +39,16 @@ namespace WebSocketClient
         {
             if (key.Equals("Open", StringComparison.CurrentCultureIgnoreCase))
             {
-                webSocketClient.OpenAsync().Wait();
+                try
+                {
+                    webSocketClient.OpenAsync().Wait();
+                }catch(Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    key = Console.ReadLine();
+                    CommandHandler(key);
+                    return;
+                }
                 ThreadPool.QueueUserWorkItem(new WaitCallback(p =>
                 {
                     (p as Core.WebSocketClient).ReceiveMessageAsync().Wait();

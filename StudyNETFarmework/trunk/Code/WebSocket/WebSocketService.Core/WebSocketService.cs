@@ -8,6 +8,8 @@ using System.Threading;
 
 namespace WebSocketService.Core
 {
+    public delegate void OnAddWebSocket(WebSocketContext webSocketContext);
+    public delegate void OnRemoveWebSocket(WebSocketContext webSocketContext);
     public delegate void OnWebSocketServiceStart(WebSocketService service, HttpListener httpListener);
     public delegate void OnWebSocketServiceStop(WebSocketService service, HttpListener httpListener);
     public delegate void OnWebSocketServiceClose();
@@ -66,6 +68,14 @@ namespace WebSocketService.Core
         /// 当服务管理的WebSocket接收到消息时触发
         /// </summary>
         public event OnRegisterMessageHandler OnRegisterMessage;
+        /// <summary>
+        /// 当服务添加WebSocket时触发
+        /// </summary>
+        public event OnAddWebSocket OnAddWebSocket;
+        /// <summary>
+        /// 当服务删除WebSocket时触发
+        /// </summary>
+        public event OnRemoveWebSocket OnRemoveWebSocket;
         #endregion
 
         #region 构造函数
@@ -200,10 +210,13 @@ namespace WebSocketService.Core
                     webSocket.OnRegisterMessage += OnRegisterMessage;
                 webSocket.OnCloseWebSocket += WebSocket_OnCloseWebSocket;
                 webSocketContexts.Add(webSocket);
+                if (OnAddWebSocket != null)
+                    OnAddWebSocket.Invoke(webSocket);
                 ThreadPool.QueueUserWorkItem(new WaitCallback(p =>
                 {
                     (p as WebSocketContext).RegisterMessageAsync().Wait();
                 }), webSocket);
+
             }
 
             CreateWebSocket(HttpListener);
@@ -212,6 +225,10 @@ namespace WebSocketService.Core
         private void WebSocket_OnCloseWebSocket(WebSocketContext context)
         {
             webSocketContexts.Remove(context);
+            if (OnRemoveWebSocket != null)
+                OnRemoveWebSocket.Invoke(context);
+            if (context != null)
+                context.Dispose();
         }
 
         /// <summary>

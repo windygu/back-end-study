@@ -21,6 +21,8 @@ namespace WebSocketService
             service = new Core.WebSocketService(serviceConfig.Ip, serviceConfig.Port, serviceConfig.WebSocketSubProtocol);
 
             service.OnRegisterMessage += Service_OnRegisterMessage;
+            service.OnAddWebSocket += Service_OnAddWebSocket;
+            service.OnRemoveWebSocket += Service_OnRemoveWebSocket;
 
             service.Start();
 
@@ -31,6 +33,16 @@ namespace WebSocketService
             timer.Start();
 
             Console.ReadLine();
+        }
+
+        private static void Service_OnRemoveWebSocket(Core.WebSocketContext webSocketContext)
+        {
+            Console.WriteLine($"删除WebSocket:{webSocketContext.ID}");
+        }
+
+        private static void Service_OnAddWebSocket(Core.WebSocketContext webSocketContext)
+        {
+            Console.WriteLine($"添加WebSocket:{webSocketContext.ID}");
         }
 
         private static void Service_OnRegisterMessage(Core.WebSocketContext context, string message)
