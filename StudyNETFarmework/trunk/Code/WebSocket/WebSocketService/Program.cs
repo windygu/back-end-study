@@ -20,7 +20,7 @@ namespace WebSocketService
             ThreadPool.SetMaxThreads(serviceConfig.MaxThreadCount, serviceConfig.MaxThreadCount);
             service = new Core.WebSocketService(serviceConfig.Ip, serviceConfig.Port, serviceConfig.WebSocketSubProtocol);
 
-            service.OnRegisterMessage += Service_OnRegisterMessage;
+            service.OnReceiveMessage += Service_OnRegisterMessage;
             service.OnAddWebSocket += Service_OnAddWebSocket;
             service.OnRemoveWebSocket += Service_OnRemoveWebSocket;
 

@@ -186,7 +186,7 @@ namespace WebSocketClient.Core
         }
         #endregion
 
-        private void InitWebSocketOptions()
+        protected virtual void InitWebSocketOptions()
         {
             ClientWebSocket.Options.AddSubProtocol(SubProtocol);
             ClientWebSocket.Options.SetRequestHeader("Sec-WebSocket-Name", Name);

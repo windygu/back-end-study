@@ -8,11 +8,14 @@ using System.Threading;
 
 namespace WebSocketService.Core
 {
-    public delegate void OnAddWebSocket(WebSocketContext webSocketContext);
-    public delegate void OnRemoveWebSocket(WebSocketContext webSocketContext);
+    public delegate void OnWebSocketServiceBeginStart(WebSocketService service, HttpListener httpListener);
     public delegate void OnWebSocketServiceStart(WebSocketService service, HttpListener httpListener);
     public delegate void OnWebSocketServiceStop(WebSocketService service, HttpListener httpListener);
     public delegate void OnWebSocketServiceClose();
+
+    public delegate bool OnAuthentication(HttpListenerContext listenerContext);
+    public delegate void OnAddWebSocket(WebSocketContext webSocketContext);
+    public delegate void OnRemoveWebSocket(WebSocketContext webSocketContext);
     public class WebSocketService : IDisposable
     {
         /// <summary>
@@ -53,6 +56,10 @@ namespace WebSocketService.Core
 
         #region 事件
         /// <summary>
+        /// WebSocket服务启动前触发
+        /// </summary>
+        public event OnWebSocketServiceBeginStart OnWebSocketServiceBeginStart;
+        /// <summary>
         /// WebSocket服务启动后触发
         /// </summary>
         public event OnWebSocketServiceStart OnWebSocketServiceStart;
@@ -67,7 +74,7 @@ namespace WebSocketService.Core
         /// <summary>
         /// 当服务管理的WebSocket接收到消息时触发
         /// </summary>
-        public event OnRegisterMessageHandler OnRegisterMessage;
+        public event OnReceiveMessageHandler OnReceiveMessage;
         /// <summary>
         /// 当服务添加WebSocket时触发
         /// </summary>
@@ -76,6 +83,10 @@ namespace WebSocketService.Core
         /// 当服务删除WebSocket时触发
         /// </summary>
         public event OnRemoveWebSocket OnRemoveWebSocket;
+        /// <summary>
+        /// 身份验证
+        /// </summary>
+        public event OnAuthentication OnAuthentication;
         #endregion
 
         #region 构造函数
@@ -121,6 +132,9 @@ namespace WebSocketService.Core
                 log.Info(item);
             }
 
+            if (OnWebSocketServiceBeginStart != null)
+                OnWebSocketServiceBeginStart.Invoke(this, HttpListener);
+
             HttpListener.Start();
 
             ThreadPool.QueueUserWorkItem(new WaitCallback(p => CreateWebSocket(p as HttpListener)), HttpListener);
@@ -155,13 +169,19 @@ namespace WebSocketService.Core
         public void Dispose()
         {
             HttpListener.Stop();
-            foreach (var item in webSocketContexts)
+            if (webSocketContexts != null)
             {
-                item.Dispose();
+                foreach (var item in webSocketContexts)
+                {
+                    item.Dispose();
+                }
             }
             webSocketContexts = null;
-            CancellationTokenSource.Cancel();
-            CancellationTokenSource.Dispose();
+            if (CancellationTokenSource != null)
+            {
+                CancellationTokenSource.Cancel();
+                CancellationTokenSource.Dispose();
+            }
             if (HttpListener != null)
             {
                 HttpListener.Close();
@@ -180,6 +200,19 @@ namespace WebSocketService.Core
             if (!httpListener.IsListening)
                 throw new Exception("HttpListener未启动");
             HttpListenerContext listenerContext = httpListener.GetContext();
+
+            if (OnAuthentication != null)
+            {
+                foreach(OnAuthentication item in OnAuthentication.GetInvocationList())
+                {
+                    if (!item.Invoke(listenerContext))
+                    {
+                        CreateWebSocket(httpListener);
+                        return;
+                    }
+                }
+            }
+
             WebSocketContext webSocket = null;
             try
             {
@@ -206,15 +239,15 @@ namespace WebSocketService.Core
             }
             else
             {
-                if (OnRegisterMessage != null)
-                    webSocket.OnRegisterMessage += OnRegisterMessage;
+                if (OnReceiveMessage != null)
+                    webSocket.OnReceiveMessage += OnReceiveMessage;
                 webSocket.OnCloseWebSocket += WebSocket_OnCloseWebSocket;
                 webSocketContexts.Add(webSocket);
                 if (OnAddWebSocket != null)
                     OnAddWebSocket.Invoke(webSocket);
                 ThreadPool.QueueUserWorkItem(new WaitCallback(p =>
                 {
-                    (p as WebSocketContext).RegisterMessageAsync().Wait();
+                    (p as WebSocketContext).ReceiveMessageAsync().Wait();
                 }), webSocket);
 
             }

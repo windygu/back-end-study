@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace WebSocketService.Core
 {
-    public delegate void OnRegisterMessageHandler(WebSocketContext context, string message);
+    public delegate void OnReceiveMessageHandler(WebSocketContext context, string message);
     public delegate void OnCloseWebSocket(WebSocketContext context);
 
     /// <summary>
@@ -43,7 +43,7 @@ namespace WebSocketService.Core
         /// <summary>
         /// 当接受到消息时触发
         /// </summary>
-        public event OnRegisterMessageHandler OnRegisterMessage;
+        public event OnReceiveMessageHandler OnReceiveMessage;
         public event OnCloseWebSocket OnCloseWebSocket;
         #endregion
 
@@ -81,7 +81,7 @@ namespace WebSocketService.Core
         /// </summary>
         /// <param name="httpListenerWebSocketContext"></param>
         /// <returns></returns>
-        public async Task RegisterMessageAsync()
+        public async Task ReceiveMessageAsync()
         {
             WebSocket webSocket = HttpListenerWebSocketContext.WebSocket;
 
@@ -109,6 +109,12 @@ namespace WebSocketService.Core
                     return;
                 }
             }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+                await CloseAsync(WebSocketCloseStatus.ProtocolError, "客户端断开连接" + ex.Message);
+                return;
+            }
             if (receiveResult.CloseStatus.HasValue)
             {
                 log.Info("接受到关闭消息！");
@@ -122,11 +128,11 @@ namespace WebSocketService.Core
             string message = Encoding.GetString(bytes);
             log.Info($"{ID}接收到消息：{message}");
 
-            if (OnRegisterMessage != null)
-                OnRegisterMessage.Invoke(this, message);
+            if (OnReceiveMessage != null)
+                OnReceiveMessage.Invoke(this, message);
 
             if (!cancellationToken.IsCancellationRequested)
-                await RegisterMessageAsync();
+                await ReceiveMessageAsync();
         }
         /// <summary>
         /// 发送消息
