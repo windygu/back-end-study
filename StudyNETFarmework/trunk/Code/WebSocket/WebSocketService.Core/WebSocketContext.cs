@@ -60,7 +60,7 @@ namespace WebSocketService.Core
             HttpListenerWebSocketContext = listenerContext.AcceptWebSocketAsync(SubProtocol).Result;
             Encoding = listenerContext.Request.ContentEncoding;
             var charset = listenerContext.Request.Headers["charset"];
-            if (charset.Length > 0)
+            if (charset != null && charset.Length > 0)
             {
                 try
                 {
