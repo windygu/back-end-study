@@ -77,7 +77,7 @@ namespace WebSocketService.Core
 
         #region 成员方法
         /// <summary>
-        /// 递归 接收消息
+        /// 递归 异步接收消息
         /// </summary>
         /// <param name="httpListenerWebSocketContext"></param>
         /// <returns></returns>
@@ -133,6 +133,64 @@ namespace WebSocketService.Core
 
             if (!cancellationToken.IsCancellationRequested)
                 await ReceiveMessageAsync();
+        }
+        /// <summary>
+        /// 递归 同步接收消息
+        /// </summary>
+        /// <param name="httpListenerWebSocketContext"></param>
+        /// <returns></returns>
+        public void ReceiveMessage()
+        {
+            WebSocket webSocket = HttpListenerWebSocketContext.WebSocket;
+
+            if (webSocket.State != WebSocketState.Open)
+                throw new Exception("Http未握手成功，接受消息！");
+            
+            var byteBuffer = WebSocket.CreateServerBuffer(ReceiveBufferSize);
+            WebSocketReceiveResult receiveResult = null;
+            try
+            {
+                receiveResult = webSocket.ReceiveAsync(byteBuffer, cancellationToken).Result;
+            }
+            catch (WebSocketException ex)
+            {
+                if (ex.InnerException is HttpListenerException)
+                {
+                    log.Error(ex);
+                    CloseAsync(WebSocketCloseStatus.ProtocolError, "客户端断开连接" + ex.Message).Wait(TimeSpan.FromSeconds(20));
+                    return;
+                }
+                else
+                {
+                    log.Error(ex);
+                    CloseAsync(WebSocketCloseStatus.ProtocolError, "WebSocket 连接异常" + ex.Message).Wait(TimeSpan.FromSeconds(20));
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+                CloseAsync(WebSocketCloseStatus.ProtocolError, "客户端断开连接" + ex.Message).Wait(TimeSpan.FromSeconds(20));
+                return;
+            }
+            if (receiveResult.CloseStatus.HasValue)
+            {
+                log.Info("接受到关闭消息！");
+                CloseAsync(receiveResult.CloseStatus.Value, receiveResult.CloseStatusDescription).Wait(TimeSpan.FromSeconds(20));
+                return;
+            }
+
+            byte[] bytes = new byte[receiveResult.Count];
+            Array.Copy(byteBuffer.Array, bytes, bytes.Length);
+
+            string message = Encoding.GetString(bytes);
+            log.Info($"{ID}接收到消息：{message}");
+
+            if (OnReceiveMessage != null)
+                OnReceiveMessage.Invoke(this, message);
+
+            if (!cancellationToken.IsCancellationRequested)
+                ReceiveMessage();
         }
         /// <summary>
         /// 发送消息

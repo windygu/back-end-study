@@ -5,6 +5,8 @@ using System.Net.WebSockets;
 using System.Net;
 using Common.Logging;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Text;
 
 namespace WebSocketService.Core
 {
@@ -200,7 +202,7 @@ namespace WebSocketService.Core
             if (!httpListener.IsListening)
                 throw new Exception("HttpListener未启动");
             HttpListenerContext listenerContext = httpListener.GetContext();
-
+            
             if (OnAuthentication != null)
             {
                 foreach(OnAuthentication item in OnAuthentication.GetInvocationList())
@@ -211,6 +213,19 @@ namespace WebSocketService.Core
                         return;
                     }
                 }
+            }
+
+            if (!listenerContext.Request.IsWebSocketRequest)
+            {
+                log.Info($"非WebSocket请求：{listenerContext.Request.RequestTraceIdentifier}");
+                var byyes = Encoding.UTF8.GetBytes($"非WebSocket请求：{listenerContext.Request.RequestTraceIdentifier}");
+                listenerContext.Response.StatusCode =(int) HttpStatusCode.BadRequest;
+                listenerContext.Response.ContentEncoding = Encoding.UTF8;
+                listenerContext.Response.OutputStream.Write(byyes,0, byyes.Length);
+                listenerContext.Response.OutputStream.Flush();
+                listenerContext.Response.Close();
+                CreateWebSocket(httpListener);
+                return;
             }
 
             WebSocketContext webSocket = null;
@@ -229,28 +244,34 @@ namespace WebSocketService.Core
 
             int workerThreads = 0, completionPortThreads = 0;
             ThreadPool.GetAvailableThreads(out workerThreads, out completionPortThreads);
-            if (workerThreads <= ReservedThreadsCount + 1 || completionPortThreads <= ReservedThreadsCount + 1)
-            {
-                /**
-                 * 可用线程小于5
-                 * 通知客户端关闭连接
-                 * */
-                webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, "可用线程不足，无法连接").Wait();
-            }
-            else
-            {
-                if (OnReceiveMessage != null)
+            //if (workerThreads <= ReservedThreadsCount + 1 || completionPortThreads <= ReservedThreadsCount + 1)
+            //{
+            //    /**
+            //     * 可用线程小于预留线程数量
+            //     * 通知客户端关闭连接
+            //     * */
+            //    webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, "可用线程不足，无法连接").Wait();
+            //}
+            //else
+            //{
+            if (OnReceiveMessage != null)
                     webSocket.OnReceiveMessage += OnReceiveMessage;
                 webSocket.OnCloseWebSocket += WebSocket_OnCloseWebSocket;
                 webSocketContexts.Add(webSocket);
                 if (OnAddWebSocket != null)
                     OnAddWebSocket.Invoke(webSocket);
-                ThreadPool.QueueUserWorkItem(new WaitCallback(p =>
-                {
-                    (p as WebSocketContext).ReceiveMessageAsync().Wait();
-                }), webSocket);
 
-            }
+            Task.Factory.StartNew(() =>
+            {
+                webSocket.ReceiveMessage();
+            }, cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+
+                //ThreadPool.QueueUserWorkItem(new WaitCallback(p =>
+                //{
+                //    (p as WebSocketContext).ReceiveMessageAsync().Wait();
+                //}), webSocket);
+
+            //}
 
             CreateWebSocket(HttpListener);
         }
