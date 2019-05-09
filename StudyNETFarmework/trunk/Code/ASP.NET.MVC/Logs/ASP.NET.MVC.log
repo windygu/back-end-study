@@ -140,3 +140,7 @@
 2019-03-22 10:40:52,233 [10] DEBUG ASP.NET.MVC.App_Start.Filter.MyActionFilterAttribute [(null)] - 参数：restaurantId，值：
 2019-03-22 10:46:08,974 [16] DEBUG ASP.NET.MVC.App_Start.Filter.MyActionFilterAttribute [(null)] - MyActionFilterAttribute 执行
 2019-03-22 10:46:08,975 [16] DEBUG ASP.NET.MVC.App_Start.Filter.MyActionFilterAttribute [(null)] - 参数：restaurantId，值：2012
+2019-04-24 10:18:12,349 [1] DEBUG ASP.NET.MVC.MvcApplication [(null)] - 网站开始运行
+2019-04-24 10:18:12,830 [7] DEBUG ASP.NET.MVC.App_Start.Filter.MyActionFilterAttribute [(null)] - MyActionFilterAttribute 执行
+2019-04-24 10:18:20,874 [7] DEBUG ASP.NET.MVC.App_Start.Filter.MyActionFilterAttribute [(null)] - MyActionFilterAttribute 执行
+2019-04-24 10:18:20,875 [7] DEBUG ASP.NET.MVC.App_Start.Filter.MyActionFilterAttribute [(null)] - 参数：searchText，值：

@@ -1,0 +1,30 @@
+2019-04-28 12:18:58,280 [30] INFO  Plugin.Manager.PluginManageInit [(null)] - 构建插件管理初始化类
+2019-04-28 12:18:58,291 [30] INFO  Plugin.Manager.PluginManageInit [(null)] - 初始化插件
+2019-04-28 12:18:58,481 [30] INFO  Plugin.Manager.PluginManager [(null)] - 成功加载插件【测试插件1 67bc831f-2230-4204-94e0-f23629fa738d】
+2019-04-28 12:18:58,485 [30] INFO  Plugin.Manager.PluginManager [(null)] - 成功加载插件【测试插件2 98efae10-3588-4812-a120-43d6def6fb2f】
+2019-04-28 12:18:58,661 [30] ERROR Plugin.Manager.PluginManageInit [(null)] - System.BadImageFormatException: 未能加载文件或程序集“Microsoft.DiaSymReader.Native.x86.dll”或它的某一个依赖项。该模块应包含一个程序集清单。
+文件名:“Microsoft.DiaSymReader.Native.x86.dll” ---> System.BadImageFormatException: 未能加载文件或程序集“Microsoft.DiaSymReader.Native.x86.dll”或它的某一个依赖项。该模块应包含一个程序集清单。
+文件名:“Microsoft.DiaSymReader.Native.x86.dll”
+
+
+   在 System.Reflection.AssemblyName.nGetFileInformation(String s)
+   在 System.Reflection.AssemblyName.GetAssemblyName(String assemblyFile)
+   在 Plugin.Manager.PluginManageInit.Initialize() 位置 E:\study\后端学习\StudyNETFarmework\trunk\Test\TestMvcPlugin\Plugin.Manager\PluginManageInit.cs:行号 86
+
+
+2019-04-28 12:20:42,537 [47] INFO  Plugin.Manager.PluginManageInit [(null)] - 构建插件管理初始化类
+2019-04-28 12:20:42,556 [47] INFO  Plugin.Manager.PluginManageInit [(null)] - 初始化插件
+2019-04-28 12:20:42,778 [47] INFO  Plugin.Manager.PluginManager [(null)] - 成功加载插件【测试插件1 67bc831f-2230-4204-94e0-f23629fa738d】
+2019-04-28 12:20:42,782 [47] INFO  Plugin.Manager.PluginManager [(null)] - 成功加载插件【测试插件2 98efae10-3588-4812-a120-43d6def6fb2f】
+2019-04-28 12:20:42,967 [47] ERROR Plugin.Manager.PluginManageInit [(null)] - System.BadImageFormatException: 未能加载文件或程序集“Microsoft.DiaSymReader.Native.x86.dll”或它的某一个依赖项。该模块应包含一个程序集清单。
+文件名:“Microsoft.DiaSymReader.Native.x86.dll” ---> System.BadImageFormatException: 未能加载文件或程序集“Microsoft.DiaSymReader.Native.x86.dll”或它的某一个依赖项。该模块应包含一个程序集清单。
+文件名:“Microsoft.DiaSymReader.Native.x86.dll”
+
+
+   在 System.Reflection.AssemblyName.nGetFileInformation(String s)
+   在 System.Reflection.AssemblyName.GetAssemblyName(String assemblyFile)
+   在 Plugin.Manager.PluginManageInit.Initialize() 位置 E:\study\后端学习\StudyNETFarmework\trunk\Test\TestMvcPlugin\Plugin.Manager\PluginManageInit.cs:行号 86
+
+
+2019-04-28 12:20:43,094 [47] INFO  Plugin.Manager.PluginManager [(null)] - 成功安装插件【测试插件1 67bc831f-2230-4204-94e0-f23629fa738d】
+2019-04-28 12:20:43,096 [47] INFO  Plugin.Manager.PluginManager [(null)] - 成功安装插件【测试插件2 98efae10-3588-4812-a120-43d6def6fb2f】

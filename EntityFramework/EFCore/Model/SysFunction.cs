@@ -41,7 +41,7 @@ namespace EFCore.Model
         }
 
         public IReadOnlyList<MenuGroup> MenuGroups {
-            get => _lazyLoader.Load(this, ref _menuGroups);
+            get => _lazyLoader.Load(this, ref _menuGroups);     //只有在使用到时候才加载
             private set => _menuGroups = new List<MenuGroup>(value);
         }
     }

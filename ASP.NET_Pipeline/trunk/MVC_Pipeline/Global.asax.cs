@@ -26,6 +26,8 @@ namespace MVC_Pipeline
         {
             log.Info("begin application Init");
             base.Init();
+            HttpRequestLogger.Repositories.DefaultRequestLoggerRepository.SetConnectionString("Data Source=.;Initial Catalog=SWERP_ORDER;User ID=sa;Password=sa@2008;");
+            HttpRequestLogger.Config.HttpRequestLoggerConfig.CreateRequestLoggerRepositoryFunc = () => new Repositories.FileRequestLoggerRepository();
             log.Info("end application Init");
         }
     }

@@ -3,3 +3,5 @@ bin/
 packages/
 .vs/
 /WebApi/Trunk/WebApi/Download
+/ASP.NET_Pipeline/trunk/MVC_Pipeline/Logs
+/StudyNETFarmework/trunk/Test/TestMvcPlugin/MVCUI/Plugins/temp

@@ -22,6 +22,7 @@ namespace MVC_Pipeline.Controllers
         // GET: Main
         public ActionResult Index()
         {
+            log.Info("执行Index Action");
             //throw new Exception("Test Error");
             return View();
         }

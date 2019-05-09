@@ -24,7 +24,7 @@ namespace TestEFCore
                             foreach (var menuGroup in sysFunction.MenuGroups)
                             {
                                 Console.WriteLine("功能ID{0}，功能名称{1}，菜单类别{4}，菜单组ID{2}，菜单组名称{3}"
-                                    , sysFunction.SysFunction_Id, sysFunction.GetName(), menuGroup.MenuGroup_Id, menuGroup.GetName(), sysFunction.GetMenuType());
+                                    , sysFunction.SysFunction_Id, sysFunction.GetName(), menuGroup.MenuGroup_Id, menuGroup.GetName(), menuGroup.SysFunction.GetMenuType());
                             }
                         }
                         else

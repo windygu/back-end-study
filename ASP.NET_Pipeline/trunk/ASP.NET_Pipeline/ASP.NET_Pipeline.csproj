@@ -71,8 +71,12 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\ConsoleExtensions.cs" />
+    <Compile Include="Extensions\HttpRequestExtension.cs" />
+    <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="HttpHandlers\MyHttpHandler.cs" />
     <Compile Include="HttpModules\MyHttpModules.cs" />
+    <Compile Include="HttpModules\RequestLogHttpModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -34,8 +34,8 @@ namespace EFCore.Model
         }
 
         public SysFunctionAggregate SysFunction {
-            get => _lazyLoader.Load(this, ref _sysFunction);
-            set => _sysFunction = value;
+            get => _lazyLoader.Load(this, ref _sysFunction);    //只有在使用到时候才加载
+            private set => _sysFunction = value;
         }
     }
 }

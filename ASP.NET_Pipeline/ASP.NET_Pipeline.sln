@@ -7,7 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASP.NET_Pipeline", "trunk\A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVC_Pipeline", "trunk\MVC_Pipeline\MVC_Pipeline.csproj", "{995031A8-71E7-4930-BBBC-3FE5296D30B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASP.NET.Core_Pipeline", "trunk\ASP.NET.Core_Pipeline\ASP.NET.Core_Pipeline.csproj", "{00EE3134-23AE-4707-ADBF-547D92B39962}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASP.NET.Core_Pipeline", "trunk\ASP.NET.Core_Pipeline\ASP.NET.Core_Pipeline.csproj", "{00EE3134-23AE-4707-ADBF-547D92B39962}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpRequestLogger", "trunk\HttpRequestLogger\HttpRequestLogger.csproj", "{198522D9-52A5-4E37-9B76-8568B88F78F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{00EE3134-23AE-4707-ADBF-547D92B39962}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00EE3134-23AE-4707-ADBF-547D92B39962}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00EE3134-23AE-4707-ADBF-547D92B39962}.Release|Any CPU.Build.0 = Release|Any CPU
+		{198522D9-52A5-4E37-9B76-8568B88F78F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{198522D9-52A5-4E37-9B76-8568B88F78F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{198522D9-52A5-4E37-9B76-8568B88F78F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{198522D9-52A5-4E37-9B76-8568B88F78F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
