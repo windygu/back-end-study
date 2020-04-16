@@ -221,7 +221,8 @@
 xcopy /s /y $(ProjectDir)Bin $(SolutionDir)\trunk\Test\TestMvcPlugin\MVCUI\Plugins\Plugin1\bin\
 xcopy /s /y $(ProjectDir)Views $(SolutionDir)\trunk\Test\TestMvcPlugin\MVCUI\Plugins\Plugin1\Views\
 xcopy /s /y $(ProjectDir)Content $(SolutionDir)\trunk\Test\TestMvcPlugin\MVCUI\Plugins\Plugin1\Content\
-xcopy /s /y $(ProjectDir)Scripts $(SolutionDir)\trunk\Test\TestMvcPlugin\MVCUI\Plugins\Plugin1\Scripts\</PostBuildEvent>
+xcopy /s /y $(ProjectDir)Scripts $(SolutionDir)\trunk\Test\TestMvcPlugin\MVCUI\Plugins\Plugin1\Scripts\
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

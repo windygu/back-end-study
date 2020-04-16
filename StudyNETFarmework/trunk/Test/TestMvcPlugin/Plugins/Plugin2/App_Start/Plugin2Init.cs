@@ -10,7 +10,7 @@ using System.Web.Routing;
 [assembly:PluginAssmebly]
 namespace Plugin1.App_Start
 {
-    [Plugin("98EFAE10-3588-4812-A120-43D6DEF6FB2F", "测试插件2", "/Plugins/Plugin2/Content/Images/preview.png", "Plugins/Default/View1", typeof(Plugin2Init), "Initialize")]
+    [Plugin("98EFAE10-3588-4812-A120-43D6DEF6FB2F", "测试插件2", "/Plugins/Plugin2/Content/Images/preview.png", "Plugins/Plugin2/Default/View1", typeof(Plugin2Init), "Initialize")]
     public class Plugin2Init
     {
         ILog log = LogManager.GetLogger<Plugin2Init>();
@@ -53,8 +53,8 @@ namespace Plugin1.App_Start
         {
             RouteTable.Routes.MapRoute(
                 "Plugin2",
-                "Plugins/{controller}/{action}/{id}",
-                new { controller = "Default", action = "Index", id = UrlParameter.Optional }).DataTokens["area"] =
+                "Plugins/" + Name + "/{controller}/{action}/{id}",
+                new { controller = "Home", action = "Index", id = UrlParameter.Optional }).DataTokens["area"] =
                 Name;
         }
     }
