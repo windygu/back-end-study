@@ -38,7 +38,7 @@ namespace EFCore.DBContext
             modelBuilder.Entity<SysFunctionAggregate>().HasKey("SysFunction_Id");
             modelBuilder.Entity<SysFunctionAggregate>().Property("SysFunction_Id").HasColumnName("SysFunction_Id");
             modelBuilder.Entity<SysFunctionAggregate>().Property("_name").HasColumnName("Name");
-            //modelBuilder.Entity<SysFunctionAggregate>().HasMany(typeof(MenuGroup), "MenuGroups").WithOne("SysFunction").HasForeignKey("SysFunction_Id");
+            modelBuilder.Entity<SysFunctionAggregate>().HasMany(typeof(MenuGroup), "MenuGroups").WithOne("SysFunction").HasForeignKey("SysFunction_Id");
 
             //modelBuilder.Entity<SysFunctionAggregate>().HasMany(s => s.MenuGroups).WithOne(s => s.SysFunction).HasForeignKey(s=>s.SysFunction_Id);
             base.OnModelCreating(modelBuilder);
