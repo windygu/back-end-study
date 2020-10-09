@@ -39,13 +39,20 @@ namespace HttpRequestLogger
             if (!RequestLoggerEventHandler.EndRequestLoggerHandler(context.Request, requestLog))
                 return;
 
-            if (requestLog != null) requestLog.EndRequest();
-            using (var requestLoggerRepository = GetConnection())
+            try
             {
-                requestLoggerRepository.UpdateRequestLogger(requestLog);
-                requestLoggerRepository.SaveChange();
+                if (requestLog != null) requestLog.EndRequest();
+                using (var requestLoggerRepository = GetConnection())
+                {
+                    requestLoggerRepository.UpdateRequestLogger(requestLog);
+                    requestLoggerRepository.SaveChange();
+                }
+                RequestLoggerEventHandler.AlfterEndRequestLoggerHandler(context.Request, requestLog);
+            }catch(Exception ex)
+            {
+                _log.Error(ex);
+                throw ex;
             }
-            RequestLoggerEventHandler.AlfterEndRequestLoggerHandler(context.Request, requestLog);
             _log.Debug("结束执行 EndRequest");
         }
 
@@ -57,11 +64,18 @@ namespace HttpRequestLogger
 
             if (!RequestLoggerEventHandler.BeginRequestLoggerHandler(context.Request, requestLog))
                 return;
-            
-            using (var requestLoggerRepository = GetConnection())
+
+            try
             {
-                requestLoggerRepository.AddRequestLogger(requestLog);
-                requestLoggerRepository.SaveChange();
+                using (var requestLoggerRepository = GetConnection())
+                {
+                    requestLoggerRepository.AddRequestLogger(requestLog);
+                    requestLoggerRepository.SaveChange();
+                }
+            }catch(Exception ex)
+            {
+                _log.Error(ex);
+                throw ex;
             }
             RequestLoggerEventHandler.AlfterBeginRequestLoggerHandler(context.Request, requestLog);
             _log.Debug("结束执行 BeginRequest");

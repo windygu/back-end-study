@@ -1,10 +1,6 @@
 ﻿using Common.Logging;
 using MVC_Pipeline.App_Start;
 using MVC_Pipeline.Controllers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
@@ -12,7 +8,7 @@ namespace MVC_Pipeline
 {
     public class MvcApplication : System.Web.HttpApplication
     {
-        ILog log = LogManager.GetLogger("Global.asax");
+        ILog log = LogManager.GetLogger<MvcApplication>();
         protected void Application_Start()
         {
             log.Info("begin application start");
@@ -29,6 +25,12 @@ namespace MVC_Pipeline
             HttpRequestLogger.Repositories.DefaultRequestLoggerRepository.SetConnectionString("Data Source=.;Initial Catalog=SWERP_ORDER;User ID=sa;Password=sa@2008;");
             HttpRequestLogger.Config.HttpRequestLoggerConfig.CreateRequestLoggerRepositoryFunc = () => new Repositories.FileRequestLoggerRepository();
             log.Info("end application Init");
+        }
+
+        public override void Dispose()
+        {
+            log.Info(" dispose application ");
+            base.Dispose();
         }
     }
 }

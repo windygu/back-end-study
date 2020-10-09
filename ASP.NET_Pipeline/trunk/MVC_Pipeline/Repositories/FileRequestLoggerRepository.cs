@@ -15,6 +15,7 @@ namespace MVC_Pipeline.Repositories
 
         static List<RequestLogger> requestLoggers = new List<RequestLogger>();
         static Timer timer;
+        static object lock_object = new object();
 
         public FileRequestLoggerRepository()
         {
@@ -37,14 +38,27 @@ namespace MVC_Pipeline.Repositories
 
         private static void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            var requestLoggerArray = requestLoggers.ToArray();
-            requestLoggers.Clear();
-            StringBuilder context = new StringBuilder();
-            foreach (var item in requestLoggerArray)
-            {
-                context.AppendLine(RequestLoggerToString(item));
-            }
-            File.AppendAllText(fileUrl, context.ToString());
+
+            // 此处有未知异常，会导致应用程序重启
+
+            //lock (lock_object)
+            //{
+            //    try
+            //    {
+            //        var requestLoggerArray = requestLoggers.ToArray();
+            //        requestLoggers.Clear();
+            //        StringBuilder context = new StringBuilder();
+            //        foreach (var item in requestLoggerArray)
+            //        {
+            //            context.AppendLine(RequestLoggerToString(item));
+            //        }
+            //        File.AppendAllText(fileUrl, context.ToString());
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Console.WriteLine(ex.Message);
+            //    }
+            //}
         }
 
         private static string RequestLoggerToString(RequestLogger requestLogger) {
@@ -71,7 +85,13 @@ namespace MVC_Pipeline.Repositories
         public void UpdateRequestLogger(RequestLogger requestLogger)
         {
             var model = requestLoggers.FirstOrDefault(p => p.Id.Equals(requestLogger.Id));
-            model.EndRequest();
+            if (model != null)
+                model.EndRequest();
+            else
+            {
+                requestLogger.EndRequest();
+                AddRequestLogger(requestLogger);
+            }
         }
     }
 }
