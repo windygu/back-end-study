@@ -299,7 +299,7 @@ public static IHostBuilder CreateHostBuilder(string[] args){
 在示例应用程序(*RuntimeStore* project)中，使用下面的命令：
 
 ``` .NET Core CLI
-dotnet store --manifest store manifest.csproj --runtime win7-x64 --output ./deployment/store --skip-optimization
+dotnet store --manifest store.manifest.csproj --runtime win7-x64 --output ./deployment/store --skip-optimization
 ```
 
 要让运行时发现runtime store，要在DOTNET_SHARED_STORE环境变量中添加runtime store的位置。
@@ -456,6 +456,26 @@ deployment/additionalDeps/shared/Microsoft.AspNetCore.App/3.0.0/StartupDiagnosti
 dotnet nuget locals all --clear
 ```
 
+> **注意**
+>
+> 设置环境变量后一定要重启电脑，否则设置的环境变量可能不生效
+>
+> 1. 托管启动类必须继承`IHostingStartup`类
+> 2. 程序集中必须包含`HostingStartup`属性，该属性标记托管启动的类
+> 3. 使用`dotnet pack`命令打包程序集
+> 4. 在使用应用中，在项目文件中设置包的引用，配置如下
+>
+>     ```XML
+>     <!-- 指定程序所需的引用 -->
+>     <ItemGroup>
+>       <PackageReference Include="HostingStartupPackage" Version="1.0.0" />
+>     </ItemGroup>
+>     <!-- 指定的包位置 -->
+>     <PropertyGroup>
+>       <RestoreSources>..\MyPacks;$(RestoreSources);https://api.nuget.org/v3/index.json;</RestoreSources>
+>     </PropertyGroup>
+>     ```
+
 ### 从类库中激活
 
 1. 使用[dotnet build](https://docs.microsoft.com/zh-cn/dotnet/core/tools/dotnet-build)命令编译*HostingStartupLibrary*类库
@@ -474,6 +494,15 @@ dotnet nuget locals all --clear
 
 5. 观察由Index页呈现的服务配置键值是否与包的`ServiceKeyInjection.Configure`设置的值相匹配。
 
+> **注意**
+>
+> 设置环境变量后一定要重启电脑，否则设置的环境变量可能不生效
+>
+> 1. 托管启动类必须继承`IHostingStartup`类
+> 2. 程序集中必须包含`HostingStartup`属性，该属性标记托管启动的类
+> 3. 使用`dotnet build`命令编译程序集
+> 4. 在使用应用中，在项目文件中设置包的引用
+
 ### 从运行时存储部署激活程序集
 
 1. *StartupDiagnostics*项目使用[PowerShell](https://docs.microsoft.com/zh-cn/powershell/scripting/powershell-scripting)修改它的*StartupDiagnostics.json*文件。PowerShell已在Windows Starting、Windows 7 SP1和Windows Server 2008R2 SP1上默认安装。其他平台上获得PowerShell，请见[安装各种版本的PowerShell](https://docs.microsoft.com/zh-cn/powershell/scripting/install/installing-powershell)。
@@ -487,3 +516,4 @@ dotnet nuget locals all --clear
    * 托管启动依赖路径（在RuntimeStore项目的*deployment*文件夹中）追加到DOTNET_ADDITIONAL_DEPS环境变量
 4. 运行示例应用程序
 5. 请求`/services`终端，查看应用程序注册的服务。请求`/diag`终端，查看诊断信息。
+

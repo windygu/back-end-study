@@ -1,0 +1,6 @@
+<StoreArtifacts>
+  <Package Id="StartupDiagnostics" Version="1.0.0" />
+  <Package Id="runtime.win-x64.Microsoft.NETCore.DotNetAppHost" Version="2.2.8" />
+  <Package Id="runtime.win-x64.Microsoft.NETCore.DotNetHostPolicy" Version="2.2.8" />
+  <Package Id="runtime.win-x64.Microsoft.NETCore.DotNetHostResolver" Version="2.2.8" />
+</StoreArtifacts>
